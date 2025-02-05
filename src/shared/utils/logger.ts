@@ -1,11 +1,10 @@
 import { createLogger, format, transports } from 'winston';
 import 'winston-daily-rotate-file';
-import { getFormattedDate } from '.';
+import { getCurrentTime, getFormattedDate } from '.';
 import { ContextHolder } from './ContextHolder';
 import { GENERAL_NS } from '../../config/initEnv';
 
 const { combine, timestamp, prettyPrint } = format;
-// const GENERAL_NS = 'general-log';
 
 export class Logger {
   private static setFileRotationTransport(subPath?: string) {
@@ -62,27 +61,27 @@ export class Logger {
     console.log('INFO MESSAGE: ', message);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
-    Logger.systemLog(ns).info(`${ns ? ns + ' -> ' : ''} ${message}`);
+    Logger.systemLog(ns).info(`${getCurrentTime()}|${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${message}`);
   }
 
   public static warn(message: any) {
-    console.log('WARNING MESSAGE: ', message);
+    console.warn('WARNING MESSAGE: ', message);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
-    Logger.systemLog(ns).warn(`${ns ? ns + ' -> ' : ''} ${message}`);
+    Logger.systemLog(ns).warn(`${getCurrentTime()}|${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${message}`);
   }
 
-  public static error(message: any) {
-    console.log('ERROR MESSAGE: ', message);
+  public static error(error: any) {
+    console.error('ERROR MESSAGE: ', error.stack);
     const context = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
-    Logger.systemLog(ns).error(`${ns ? ns + ' -> ' : ''} ${message}`);
+    Logger.systemLog(ns).error(`${getCurrentTime()}|${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${error.message}`);
   }
 
   public static debug(message: string) {
-    console.log('DEBUG MESSAGE: ', message);
+    console.debug('DEBUG MESSAGE: ', message);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
-    Logger.systemLog(ns).debug(`${ns ? ns + ' -> ' : ''} ${message}`);
+    Logger.systemLog(ns).debug(message);
   }
 }

@@ -4,8 +4,8 @@
   "description": "Event Ticket Booking System",
   "main": "src/server.js",
   "scripts": {
-    "start": "test && tsc && node dist/server.js",
-    "start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
+    "start": "test && tsc && node -r newrelic dist/server.js",
+    "start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' -r newrelic dist/server.js",
     "test": "echo hello"
   },
   "jest": {
@@ -25,12 +25,13 @@
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.47",
     "morgan": "^1.10.0",
+    "newrelic": "^12.11.3",
     "rate-limiter-flexible": "^5.0.3",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "uuid": "^11.0.5",
-    "winston": "^3.15.0",
+    "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {

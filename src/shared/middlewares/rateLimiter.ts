@@ -16,54 +16,24 @@ const redisClient = new Redis({
   name: 'REDIS_RATE_LIMITER',
 });
 
-/**
- * This function is a listener for the 'end' event of the Redis client.
- * It logs a message to the console if the application is not in test mode.
- * @param {any} - The event data, which is not used in this function.
- */
 redisClient.on('end', () => {
   if (NODE_ENV != 'test') Logger.error('Redis ended');
-  // if (NODE_ENV != 'test') console.error('Redis ended');
 });
 
-/**
- * This function is a listener for the 'error' event of the Redis client.
- * It logs a message to the console if the application is not in test mode.
- * @param {any} - The error event data, which is not used in this function.
- */
 redisClient.on('error', () => {
   if (NODE_ENV != 'test') Logger.error('Redis Error');
-  // if (NODE_ENV != 'test') console.error('Redis Error');
 });
 
-/**
- * This function is a listener for the 'SIGINT' event of the Redis client.
- * It logs a message to the console if the application is not in test mode.
- *
- * @param {any} - The event data, which is not used in this function.
- */
 redisClient.on('SIGINT', () => {
   if (NODE_ENV != 'test') Logger.info('SIGINT ERR');
-  // if (NODE_ENV != 'test') console.log('SIGINT ERR');
 });
 
-/**
- * This function is a middleware for rate limiting requests to the application.
- * It uses the `RateLimiterRedis` library to limit the number of requests a merchant or IP address can make within a certain time frame.
- *
- * @param {Request} request - The Express request object containing information about the incoming request.
- * @param {Response} response - The Express response object used to send HTTP responses back to the client.
- * @param {NextFunction} next - The Express next function used to pass control to the next middleware in the stack.
- *
- * @returns {Promise<void>} - A Promise that resolves when the middleware has finished processing the request.
- *
- * @throws {AppError} - If the merchant has exceeded the maximum number of requests allowed within the specified time frame, an `AppError` is thrown with a status code of 429 and a message indicating that the system is busy and the merchant should try again later.
- */
+
 export default async function rateLimiter(request: Request, response: Response, next: NextFunction): Promise<void> {
   let key: any;
   let controlledPath = ['/book', '/cancelled'];
   let user;
-  
+
   if (request.headers['authorization'] && request.headers['authorization'].split(' ')[1]) {
     const jwtClient = new JwtClient();
 
@@ -97,7 +67,7 @@ export default async function rateLimiter(request: Request, response: Response, 
         limiter.duration = 10;
 
         await limiter.consume(`trans-${path}-${key}`);
-  
+
         return next();
       }
     }
@@ -108,10 +78,10 @@ export default async function rateLimiter(request: Request, response: Response, 
     console.log(error);
 
     if (request.headers['authorization'] && request.headers['authorization'].split(' ')[1]) {
-      Logger.warn('ERROR: Too many requests on path: ' + request.path + ' from: ' + user.email + '. Please try again later.',);
+      Logger.warn('WARNING: Too many requests on path: ' + request.path + ' from: ' + user.email + '. Please try again later.');
       return next(new AppError(`System busy, Try again in a moment.`, HttpStatusCodes.TOO_MANY_REQUESTS));
     }
-    Logger.warn('ERROR: Too many requests on path: ' + request.path + ' from: user with NO JWT. Please try again later.');
+    Logger.warn('WARNING: Too many requests on path: ' + request.path + ' from: user with NO JWT. Please try again later.');
     return next(new AppError(`System busy, Try again in a moment.`, HttpStatusCodes.TOO_MANY_REQUESTS));
   }
 }

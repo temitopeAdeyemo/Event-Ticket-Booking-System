@@ -5,3 +5,4 @@ dist/
 /logs
 note.txt
 task.txt
+newrelic_agent.log

@@ -19,7 +19,7 @@ export class Morgan {
     morgan.token('nigeria-time', () => getCurrentTime());
 
     morgan.token('nigeria-time', () => {
-      return moment().tz('Africa/Lagos').format('YYYY-MM-DD HH:mm:ss'); // Nigeria's timezone (WAT)
+      return moment().tz('Africa/Lagos').format('YYYY-MM-DD HH:mm:ss');
     });
   }
   static httpRequestLogger = morgan(
@@ -45,9 +45,11 @@ export class Morgan {
           const data = JSON.parse(message);
           const context: any = ContextHolder.getContext();
           const ns = context?.user?.email || GENERAL_NS;
-          Logger.systemLog(ns).http('request-info', data);
+          Logger.systemLog(ns).http(`${getCurrentTime()}|request-info`, data);
         },
       },
     }
   );
+
+  static requestSummaryMiddleware = morgan(':nigeria-time - :method :url :status :res[content-length] - :response-time ms :user-agent');
 }

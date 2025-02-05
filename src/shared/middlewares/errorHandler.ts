@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { CelebrateError } from 'celebrate';
 import { JsonWebTokenError } from 'jsonwebtoken';
-import { Logger } from './utils/logger';
-import AppError from './utils/appError';
-import { HttpStatusCodes } from './utils/HttpStatusCodes';
-import { NODE_ENV } from '../config/initEnv';
-
+import { Logger } from '../utils/logger';
+import AppError from '../utils/appError';
+import { HttpStatusCodes } from '../utils/HttpStatusCodes';
+import { NODE_ENV } from '../../config/initEnv';
+import { ResponseHandler } from '../utils/response';
+const { sendFailedResponse } = ResponseHandler;
 export default function errorHandler(error: Error, request: Request, response: Response, _: NextFunction) {
   Logger.error(error);
 
@@ -25,10 +26,5 @@ export default function errorHandler(error: Error, request: Request, response: R
     statusCode = HttpStatusCodes.BAD_REQUEST;
   }
 
-  response.status(statusCode).json({
-    success: false,
-    message,
-    data: null,
-    stack: errorStack,
-  });
+  sendFailedResponse(response, statusCode, message, null, errorStack);
 }

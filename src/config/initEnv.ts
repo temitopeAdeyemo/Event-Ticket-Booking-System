@@ -5,7 +5,7 @@ dotenv.config()
 export const NODE_ENV = process.env.NODE_ENV || 'development';
 export const DB_URL = NODE_ENV == 'development' ? process.env.DB_URL_DEV : process.env.DB_URL;
 export const PORT = process.env.PORT || 3000;
-// export const JWT_KEY = process.env.JWT_KEY || "somekey";
+export const JWT_KEY = process.env.JWT_KEY || "somekey";
 export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
 export const port = process.env.PORT || 50051;
 export const saltRounds = process.env.SALT_ROUNDS || 10;
@@ -17,8 +17,10 @@ export const redisPassword = process.env.REDIS_PASSWORD || 'default';
 export const MAX_LOGIN_ATTEMPTS = parseInt(process.env.MAX_LOGIN_ATTEMPTS || '5');
 export const LOGIN_ATTEMPT_EXPIRY = parseInt(process.env.LOGIN_ATTEMPT_EXPIRY || '2');
 export const GENERAL_NS = process.env.GENERAL_NS || 'general-log';
+export const NEW_RELIC_APP_NAME = process.env.NEW_RELIC_APP_NAME;
+export const NEW_RELIC_LICENSE_KEY = process.env.NEW_RELIC_LICENSE_KEY;
 
-const requiredEnvVariables = ["DB_URL", "PORT", "NODE_ENV", "JWT_EXPIRES_IN"];
+const requiredEnvVariables = ["DB_URL", "PORT", "NODE_ENV", "JWT_EXPIRES_IN", "NEW_RELIC_APP_NAME", "NEW_RELIC_LICENSE_KEY"];
 
 // Load environment variables from the .env file
 const loadEnvVariables = (): void => {

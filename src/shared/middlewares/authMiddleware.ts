@@ -5,12 +5,9 @@ import JwtClient from '../services/JWT';
 import { ContextHolder } from '../utils/ContextHolder';
 import { AuthUserPayload } from '../types/express';
 import { Logger } from '../utils/logger';
-import { getCurrentTime } from '../utils';
 
 export class AuthMiddleware {
 static requestContextMiddleware = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  // const startTime = Date.now();
-  const startTime = getCurrentTime();
   const data: { [key: string]: any } = {};
 
   data['req_method'] = req.method;
@@ -19,7 +16,7 @@ static requestContextMiddleware = catchAsync(async (req: Request, res: Response,
   ContextHolder.setContext(data);
 
   if (!req.headers.authorization) {
-    this.logRequestInitializationTime(startTime);
+    this.logRequestInitializationTime();
     return next();
   }
 
@@ -30,7 +27,7 @@ static requestContextMiddleware = catchAsync(async (req: Request, res: Response,
     isAuthenticated = new JwtClient().verifyAccessToken(token) as AuthUserPayload;
   } catch (error) {
     ContextHolder.setContext({ user: { token } });
-    this.logRequestInitializationTime(startTime);
+    this.logRequestInitializationTime();
     throw error;
   }
 
@@ -42,7 +39,7 @@ static requestContextMiddleware = catchAsync(async (req: Request, res: Response,
   delete user.exp;
 
   ContextHolder.setContext({ user });
-  this.logRequestInitializationTime(startTime);
+  this.logRequestInitializationTime();
 
   next();
 });
@@ -52,7 +49,7 @@ static requireAuth = catchAsync(async (req: Request, res: Response, next: NextFu
   next();
 });
 
-private static logRequestInitializationTime = (startTime: string) => {
-  return Logger.info(`Request processing started: ${startTime} + One hour late.`);
+private static logRequestInitializationTime = () => {
+  return Logger.info(`Request processing started.`);
 };
 }

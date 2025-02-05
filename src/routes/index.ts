@@ -1,17 +1,16 @@
 import express from 'express';
 import { Logger } from '../shared/utils/logger';
-import { sendSuccess } from '../shared/utils/response';
-
+import { ResponseHandler } from '../shared/utils/response';
+import AppError from '../shared/utils/appError';
+const {sendSuccessResponse} = ResponseHandler;
 const router = express.Router();
 
 router.get('/', (req, res) => {
+    if(1) throw new AppError("Thrown err for check")
     setTimeout(() => {
-        sendSuccess(res, 200, "Hello World!", { data: "Hello World!" });
+        sendSuccessResponse(res, 200, "Hello World!", { data: "Hello World!" });
     }, 1000);
     Logger.info("Hello world!",)
-//   res.status(200).json('Hello World!');
-// sendSuccess(res, 200, "Hello World!", {data: "Hello World!"});
 });
-// Register all module routes
 
 export default router;
