@@ -1,8 +1,8 @@
-import { BookingModel } from '../entity/Booking';
+import { Booking } from '../entity/Booking';
 import { AppRepository } from '../../../../shared/Helpers/AppRepository';
 
-export default class BookingRepository extends AppRepository<BookingModel> {
+export default class BookingRepository extends AppRepository<Booking> {
   constructor() {
-    super(BookingModel);
+    super(Booking);
   }
 }

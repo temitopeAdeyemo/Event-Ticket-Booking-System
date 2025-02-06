@@ -1,7 +1,7 @@
 {
   "name": "event-ticket-booking-system",
   "version": "1.0.0",
-  "description": "Event Ticket Booking System",
+  "description": "EventModel Ticket Booking System",
   "main": "src/server.js",
   "scripts": {
     "start": "test && tsc && node -r newrelic dist/server.js",

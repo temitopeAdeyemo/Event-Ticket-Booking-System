@@ -1,9 +1,9 @@
-import { DataSource, QueryRunner } from 'typeorm';
-import { DB_APPLICATION_NAME, DB_URL, DB_SYNC, DB_LOGGING, NODE_ENV } from './index';
-console.log(NODE_ENV, "--->", DB_URL);
+import { DataSource } from 'typeorm';
+import { DB_APPLICATION_NAME, DB_URL, DB_SYNC, DB_LOGGING } from './index';
+import { Log } from '../shared/utils/Log';
+
 const AppDataSource = new DataSource({
   type: 'postgres',
-  // url: 'postgres://postgres:123456789@localhost:5432/customerdb',
   url: DB_URL,
   synchronize: DB_SYNC,
   logging: DB_LOGGING,
@@ -11,27 +11,14 @@ const AppDataSource = new DataSource({
   entities: ['./dist/modules/**/models/entities/*.js'],
   migrations: ['./src/shared/migrations/*.ts'],
   applicationName: DB_APPLICATION_NAME,
-  poolSize: 30
 });
 
-(async () => {
+export const connectDb = async () => {
   try {
     await AppDataSource.initialize();
     console.log('Connected to database...');
   } catch (err: any) {
-    console.error('Something went wrong when connecting to the database:\n', err.stack);
-  }
-})();
-
-export const startTransaction = async (): Promise<QueryRunner> => {
-  const queryRunner = AppDataSource.createQueryRunner();
-  try {
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    return queryRunner;
-  } catch (error) {
-    await queryRunner.release();
-    throw error;
+    Log.error('Something went wrong when connecting to the database:\n', err.stack);
   }
 };
 

@@ -1,4 +1,4 @@
-import { Repository, DeepPartial, EntityTarget, ObjectLiteral, FindOptionsWhere } from 'typeorm';
+import { Repository, DeepPartial, EntityTarget, ObjectLiteral, FindOptionsWhere, QueryRunner } from 'typeorm';
 import AppDataSource from '../../config/Database.config';
 
 export class AppRepository<T extends ObjectLiteral> {
@@ -35,5 +35,17 @@ export class AppRepository<T extends ObjectLiteral> {
 
   async findAll(filter: FindOptionsWhere<T> | FindOptionsWhere<T>[]): Promise<T[]> {
     return this.ormRepository.find({ where: filter });
+  }
+
+  public async startTransaction(): Promise<QueryRunner> {
+    const queryRunner = AppDataSource.createQueryRunner();
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      return queryRunner;
+    } catch (error) {
+      await queryRunner.release();
+      throw error;
+    }
   }
 }

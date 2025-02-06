@@ -1,1 +1,1 @@
-# Event-Ticket-Booking-System
+# EventModel-Ticket-Booking-System
