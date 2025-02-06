@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import morgan from 'morgan';
 import { ContextHolder } from '../utils/ContextHolder';
-import { GENERAL_NS } from '../../config/initEnv';
-import { Logger } from '../utils/logger';
+import { GENERAL_NS } from '../../config';
+import { Log } from '../utils/Log';
 import moment from 'moment-timezone';
 import { getCurrentTime } from '../utils';
 
-export class Morgan {
+export class MorganConfig {
   static {
     type MorganRequest = Request & { _startTime?: Date };
 
@@ -45,7 +45,7 @@ export class Morgan {
           const data = JSON.parse(message);
           const context: any = ContextHolder.getContext();
           const ns = context?.user?.email || GENERAL_NS;
-          Logger.systemLog(ns).http(`${getCurrentTime()}|request-info`, data);
+          Log.systemLog(ns).http(`${getCurrentTime()}|request-info`, data);
         },
       },
     }

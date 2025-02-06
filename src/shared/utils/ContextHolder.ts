@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'async_hooks';
-import AppError from './appError';
+import AppError from './AppError';
 import { HttpStatusCodes } from './HttpStatusCodes';
 
 export class ContextHolder {

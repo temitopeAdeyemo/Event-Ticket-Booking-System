@@ -1,6 +1,6 @@
 'use strict';
 
-const { NEW_RELIC_APP_NAME, NEW_RELIC_LICENSE_KEY, NODE_ENV } = require('./src/config/initEnv');
+const { NEW_RELIC_APP_NAME, NEW_RELIC_LICENSE_KEY, NODE_ENV } = require('./src/config/index');
 
 /**
  * New Relic agent configuration.

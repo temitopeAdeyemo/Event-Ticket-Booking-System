@@ -2,11 +2,12 @@ import { createLogger, format, transports } from 'winston';
 import 'winston-daily-rotate-file';
 import { getCurrentTime, getFormattedDate } from '.';
 import { ContextHolder } from './ContextHolder';
-import { GENERAL_NS } from '../../config/initEnv';
+import { GENERAL_NS } from '../../config';
 
 const { combine, timestamp, prettyPrint } = format;
 
-export class Logger {
+export class Log {
+  static loggers = new Map<string, any>();
   private static setFileRotationTransport(subPath?: string) {
     const path = subPath ? `logs/${getFormattedDate()}/${subPath}/combined-%DATE%.log` : 'logs/combined-%DATE%.log';
 
@@ -29,12 +30,16 @@ export class Logger {
   }
 
   public static systemLog(subPath = '') {
+    if (this.loggers.has(subPath)) {
+      return this.loggers.get(subPath);
+    }
+
     const logger = createLogger({
-      defaultMeta: Logger.setDefaultMeta(),
+      defaultMeta: Log.setDefaultMeta(),
       level: 'http',
       format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS A' }), prettyPrint()),
       transports: [
-        Logger.setFileRotationTransport(subPath),
+        Log.setFileRotationTransport(subPath),
         new transports.File({
           filename: subPath ? `logs/${getFormattedDate()}/${subPath}/error.log` : `logs/${getFormattedDate()}/error.log`,
           level: 'error',
@@ -54,34 +59,37 @@ export class Logger {
       })
     );
 
+    this.loggers.set(subPath, logger);
+
     return logger;
   }
 
   public static info(message: any) {
-    console.log('INFO MESSAGE: ', message);
+    console.log(`${getCurrentTime()} [INFO MESSAGE]`, message);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
-    Logger.systemLog(ns).info(`${getCurrentTime()}|${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${message}`);
+    Log.systemLog(ns).info(`${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${message}`);
   }
 
   public static warn(message: any) {
-    console.warn('WARNING MESSAGE: ', message);
+    console.warn(`${getCurrentTime()} [WARNING MESSAGE]`, message);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
-    Logger.systemLog(ns).warn(`${getCurrentTime()}|${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${message}`);
+    Log.systemLog(ns).warn(`${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${message}`);
   }
 
-  public static error(error: any) {
-    console.error('ERROR MESSAGE: ', error.stack);
+  public static error(...errors: any) {
+    errors = errors.map((error: any) => error?.message || error);
+    console.error(`${getCurrentTime()} [ERROR MESSAGE]`, errors.join(', '));
     const context = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
-    Logger.systemLog(ns).error(`${getCurrentTime()}|${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${error.message}`);
+    Log.systemLog(ns).error(`${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${errors.join(', ')}`);
   }
 
-  public static debug(message: string) {
-    console.debug('DEBUG MESSAGE: ', message);
+  public static debug(err: any) {
+    console.debug(`${getCurrentTime()} [DEBUG MESSAGE]`, err.stack || err);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
-    Logger.systemLog(ns).debug(message);
+    Log.systemLog(ns).debug(err);
   }
 }

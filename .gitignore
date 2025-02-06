@@ -5,4 +5,7 @@ dist/
 /logs
 note.txt
 task.txt
+scope.txt
 newrelic_agent.log
+package-lock.json
+yarn-lock.json

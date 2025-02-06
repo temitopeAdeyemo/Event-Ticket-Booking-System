@@ -1,5 +1,5 @@
-import bcrypt from "bcryptjs";
-import { saltRounds } from "../../config/initEnv";
+import bcrypt from 'bcryptjs';
+import { saltRounds } from '../../config';
 
 class Bcrypt {
   saltRounds: string | number;

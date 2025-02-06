@@ -1,56 +1,34 @@
 import Redis from 'ioredis';
-import { redisHost, redisPassword, redisPort } from '../../config/initEnv';
-import { Logger } from '../utils/logger';
+import { redisHost, redisPassword, redisPort } from '../../config';
+import { Log } from '../utils/Log';
 
-class CacheClient {
-  client: Redis = this.init();
-
-  init() {
-    const client = new Redis({
+class RedisClient {
+  private static instance: Redis | null = null;
+  static setInstance() {
+    this.instance = new Redis({
       host: redisHost,
       port: redisPort,
-      password:redisPassword,
-      connectionName: 'REDIS_CACHE',
+      password: redisPassword,
+      connectionName: 'DEFAULT_CONNECTION',
       connectTimeout: 30 * 1000,
-      name: 'REDIS_CACHE',
+      name: 'DEFAULT_CONNECTION',
     });
 
-    client.on('connect', () => {
-      Logger.info('Redis connected');
+    this.instance.on('connect', () => Log.info('Redis connected'));
+    this.instance.on('ready', () => Log.info('Redis ready for connection'));
+    this.instance.on('end', () => Log.info('Redis connection ended'));
+    this.instance.on('error', (error) => {
+      Log.error('Redis Error: ' + error.message);
+      process.exit(0);
     });
-    client.on('ready', () => {
-      Logger.info('Redis ready for connection');
-    });
-    client.on('end', () => {
-      Logger.info('Redis connection ended');
-    });
-    client.on('error', (error) => {
-      console.log("...............|||.................");
-      Logger.error('Redis Error'+ error.message);
-    });
-    client.on('SIGINT', () => {
-      Logger.info('SIGINT ERR');
-    });
-
-    return client
+    this.instance.on('SIGINT', () => Log.info('SIGINT ERR'));
   }
 
-  getClient(){
-    return this.client;
-  }
+  public static getInstance(): Redis {
+    if (!this.instance) this.setInstance();
 
-  set(key: string, value: any, expiry = 72 * 60 * 60) {
-    this.client.set(key, JSON.stringify(value), 'EX', expiry);
-  }
-
-  async get(key: string) {
-    const value = await this.client.get(key);
-    return value ? JSON.parse(value) : null;
-  }
-
-  delete(key: string) {
-    this.client.del(key);
+    return this.instance!;
   }
 }
 
-export default new CacheClient();
+export default RedisClient;

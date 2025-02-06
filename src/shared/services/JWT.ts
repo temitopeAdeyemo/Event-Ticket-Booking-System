@@ -1,6 +1,6 @@
-import  { sign, verify } from 'jsonwebtoken';
-import { jwtAccessTokenSecret, jwtRefreshTokenSecret } from '../../config/initEnv';
-import AppError from '../utils/appError';
+import { sign, verify } from 'jsonwebtoken';
+import { jwtAccessTokenSecret, jwtRefreshTokenSecret } from '../../config';
+import AppError from '../utils/AppError';
 import { HttpStatusCodes } from '../utils/HttpStatusCodes';
 
 class JwtClient {
@@ -16,7 +16,7 @@ class JwtClient {
    * Generates an access token using the provided payload and the access token secret.
    * The token is signed with the secret and has an expiration time of 900000 milliseconds (15 minutes).
    *
-   * @param payload - The payload containing the merchant data to be included in the token.
+   * @param payload - The payload containing the user data to be included in the token.
    * @returns The generated access token as a string.
    */
   generateAccessToken(payload: any) {
@@ -28,7 +28,7 @@ class JwtClient {
    * The token is signed with the secret and has an expiration time of 1500 milliseconds (2.5 minutes).
    * The payload is extended with a 'type' property set to 'refresh'.
    *
-   * @param payload - The payload containing the merchant data to be included in the token.
+   * @param payload - The payload containing the user data to be included in the token.
    * @returns The generated refresh token as a string.
    */
   generateRefreshToken(payload: any): string {

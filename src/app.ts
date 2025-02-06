@@ -1,12 +1,13 @@
 import 'newrelic';
-import { AuthMiddleware } from './shared/middlewares/authMiddleware';
+import 'reflect-metadata';
+import { AuthMiddleware } from './shared/middlewares/AuthMiddleware';
 import express, { Application } from 'express';
 import routes from './routes';
-import AppError from './shared/utils/appError';
-import rateLimiter from './shared/middlewares/rateLimiter';
-import errorHandler from './shared/middlewares/errorHandler';
+import { ErrorHandler } from './shared/middlewares/ErrorHandler';
 import { ResponseCaptureMiddleware } from './shared/middlewares/ResponseInterceptor';
-import { Morgan } from './shared/middlewares/morganConfig';
+import { MorganConfig as Morgan } from './shared/middlewares/MorganConfig';
+import { ResourceNotFound } from './shared/middlewares/ResourceNotFound';
+import { RateLimiter } from './shared/middlewares/RateLimiter';
 
 const app: Application = express();
 
@@ -16,15 +17,13 @@ app.use(ResponseCaptureMiddleware.responseInterceptor);
 app.use(AuthMiddleware.requestContextMiddleware);
 app.use(Morgan.httpRequestLogger);
 app.use(Morgan.requestSummaryMiddleware);
-app.use(rateLimiter);
+app.use(RateLimiter.init);
 
 // Register routes
 app.use('/api/v1', routes);
 
-app.all('*', (req, res, next) => {
-  throw new AppError('This url is not registered on the api', 404);
-});
+app.all('*', ResourceNotFound.init);
 
-app.use(errorHandler);
+app.use(ErrorHandler.init);
 
 export default app;
