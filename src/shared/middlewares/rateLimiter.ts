@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
 import AppError from '../utils/AppError';
-import JwtClient from '../services/JWT';
+import JwtClient from '../services/JwtClient';
 import { HttpStatusCodes } from '../utils/HttpStatusCodes';
 import { Log } from '../utils/Log';
 import { NODE_ENV } from '../../config';
-import RedisClient from '../services/Redis';
+import RedisClient from '../services/RedisClient';
 
 export class RateLimiter {
   static redisClient = RedisClient.getInstance();
@@ -23,13 +23,12 @@ export class RateLimiter {
         key = user.email;
       } catch (error: any) {
         Log.warn(
-          `ERROR: ${
-            error.message || 'Invalid session id.'
-          } on path: ' + request.path + ' from: user with invalid or expired JWT. Please try again later.`
+          `ERROR: ${error.message || 'Invalid session id.'} on path: ${
+            request.path
+          }from user with invalid or expired JWT. Please try again later.`
         );
         return next(new AppError(error.message || 'Invalid session id.', HttpStatusCodes.FORBIDDEN));
       }
-      request.currentUser = { id: user.user_id, email: user.email };
     }
     try {
       const limiter = new RateLimiterRedis({
@@ -55,8 +54,6 @@ export class RateLimiter {
       await limiter.consume(`trans-${key}`);
       return next();
     } catch (error) {
-      console.log(error);
-
       if (request.headers['authorization'] && request.headers['authorization'].split(' ')[1]) {
         Log.warn('WARNING: Too many requests on path: ' + request.path + ' from: ' + user.email + '. Please try again later.');
         return next(new AppError(`System busy, Try again in a moment.`, HttpStatusCodes.TOO_MANY_REQUESTS));

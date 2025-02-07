@@ -7,7 +7,7 @@ import { GENERAL_NS } from '../../config';
 const { combine, timestamp, prettyPrint } = format;
 
 export class Log {
-  static loggers = new Map<string, any>();
+  private static loggers = new Map<string, any>();
   private static setFileRotationTransport(subPath?: string) {
     const path = subPath ? `logs/${getFormattedDate()}/${subPath}/combined-%DATE%.log` : 'logs/combined-%DATE%.log';
 
@@ -65,14 +65,14 @@ export class Log {
   }
 
   public static info(message: any) {
-    console.log(`${getCurrentTime()} [INFO MESSAGE]`, message);
+    console.log(`[INFO MESSAGE] ${getCurrentTime()}`, message);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
     Log.systemLog(ns).info(`${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${message}`);
   }
 
   public static warn(message: any) {
-    console.warn(`${getCurrentTime()} [WARNING MESSAGE]`, message);
+    console.warn(`[WARNING MESSAGE] ${getCurrentTime()}`, message);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
     Log.systemLog(ns).warn(`${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${message}`);
@@ -80,14 +80,14 @@ export class Log {
 
   public static error(...errors: any) {
     errors = errors.map((error: any) => error?.message || error);
-    console.error(`${getCurrentTime()} [ERROR MESSAGE]`, errors.join(', '));
+    console.error(`[ERROR MESSAGE] ${getCurrentTime()}`, errors.join(''));
     const context = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
     Log.systemLog(ns).error(`${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${errors.join(', ')}`);
   }
 
   public static debug(err: any) {
-    console.debug(`${getCurrentTime()} [DEBUG MESSAGE]`, err.stack || err);
+    console.debug(`[DEBUG MESSAGE] ${getCurrentTime()}`, err.stack || err);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
     Log.systemLog(ns).debug(err);

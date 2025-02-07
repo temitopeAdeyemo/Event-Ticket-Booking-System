@@ -34,7 +34,7 @@ const loadEnvVariables = (): void => {
   const result = dotenv.config();
 
   if (result.error) {
-    console.error('Error loading environment variables from .env file');
+    Log.error('Error loading environment variables from .env file');
     process.exit(1);
   }
 
@@ -42,7 +42,7 @@ const loadEnvVariables = (): void => {
   requiredEnvVariables.forEach((envVar) => {
     const value = process.env[envVar];
     if (!value) {
-      console.error(`Please set ${envVar} in the env file.`);
+      Log.error(`Please set ${envVar} in the env file.`);
       process.exit(1);
     }
   });

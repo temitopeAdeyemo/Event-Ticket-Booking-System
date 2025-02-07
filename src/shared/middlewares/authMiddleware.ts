@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { catchAsync } from '../utils/catchAsync';
 import AppError from '../utils/AppError';
-import JwtClient from '../services/JWT';
+import JwtClient from '../services/JwtClient';
 import { ContextHolder } from '../utils/ContextHolder';
 import { AuthUserPayload } from '../types/express';
 import { Log } from '../utils/Log';
@@ -10,12 +10,13 @@ export class AuthMiddleware {
   static requestContextMiddleware = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const data: { [key: string]: any } = {};
 
-    data['req_method'] = req.method;
-    data['url'] = req.url;
+    data.req_method = req.method;
+    data.url = req.url;
 
     ContextHolder.setContext(data);
 
     if (!req.headers.authorization) {
+      ContextHolder.setContext({ user: { email: req.body.email || req.query.email || req.headers.email } });
       this.logRequestInitializationTime();
       return next();
     }
@@ -30,7 +31,7 @@ export class AuthMiddleware {
       this.logRequestInitializationTime();
       throw error;
     }
-
+    
     req.currentUser = isAuthenticated;
 
     let user: any = { ...req.currentUser };
@@ -40,7 +41,6 @@ export class AuthMiddleware {
 
     ContextHolder.setContext({ user });
     this.logRequestInitializationTime();
-
     next();
   });
 

@@ -3,7 +3,7 @@ import { jwtAccessTokenSecret, jwtRefreshTokenSecret } from '../../config';
 import AppError from '../utils/AppError';
 import { HttpStatusCodes } from '../utils/HttpStatusCodes';
 
-class JwtClient {
+export class JwtClient {
   private accessTokenSecret: string;
   private refreshTokenSecret: string;
 

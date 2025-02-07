@@ -10,7 +10,7 @@ export const validateAuth = celebrate({
       
     password: Joi.string()
       .required()
-      .min(8)
+      .min(6)
       .max(16)
       .message('Password must be between 6 and 24 characters'),
   }),

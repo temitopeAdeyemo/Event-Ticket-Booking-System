@@ -1,4 +1,4 @@
 import EventRepository from './EventRepository';
-import WaitListRepository from './WaitlistRepository';
+import WaitListRepository from './WaitListRepository';
 
 export { EventRepository, WaitListRepository };

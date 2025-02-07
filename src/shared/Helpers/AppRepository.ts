@@ -1,5 +1,5 @@
 import { Repository, DeepPartial, EntityTarget, ObjectLiteral, FindOptionsWhere, QueryRunner } from 'typeorm';
-import AppDataSource from '../../config/Database.config';
+import { AppDataSource } from '../../config/Database.config';
 
 export class AppRepository<T extends ObjectLiteral> {
   protected ormRepository: Repository<T>;
@@ -8,9 +8,11 @@ export class AppRepository<T extends ObjectLiteral> {
     this.ormRepository = AppDataSource.getRepository(entity);
   }
 
-  async create(data: DeepPartial<T>): Promise<T> {
+  async create(data: DeepPartial<T>, save = true): Promise<T> {
     const entity = this.ormRepository.create(data);
-    return this.ormRepository.save(entity);
+
+    if (save) return this.ormRepository.save(entity);
+    return entity;
   }
 
   async update(filter: string | number | FindOptionsWhere<T> | string[], updateData: Partial<Partial<T>>) {
@@ -25,6 +27,10 @@ export class AppRepository<T extends ObjectLiteral> {
     return this.ormRepository.findOne({ where: filter });
   }
 
+  async findOneByDataAndLock(queryRunner: QueryRunner, filter: FindOptionsWhere<T> | FindOptionsWhere<T>[]): Promise<T | null> {
+    return await queryRunner.manager.findOne(this.ormRepository.target, { where: filter, lock: { mode: 'pessimistic_write' } });
+  }
+
   async findOneById(id: T['id']): Promise<T | null> {
     return this.ormRepository.findOne({ where: { id } });
   }
@@ -37,15 +43,7 @@ export class AppRepository<T extends ObjectLiteral> {
     return this.ormRepository.find({ where: filter });
   }
 
-  public async startTransaction(): Promise<QueryRunner> {
-    const queryRunner = AppDataSource.createQueryRunner();
-    try {
-      await queryRunner.connect();
-      await queryRunner.startTransaction();
-      return queryRunner;
-    } catch (error) {
-      await queryRunner.release();
-      throw error;
-    }
+  async count(filter: FindOptionsWhere<T> | FindOptionsWhere<T>[]) {
+    return this.ormRepository.count({ where: filter });
   }
 }

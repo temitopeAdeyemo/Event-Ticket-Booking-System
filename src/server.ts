@@ -4,8 +4,10 @@ import { Log } from './shared/utils/Log';
   try {
     const App = require('./app').default;
     const app = new App();
-    app.listen();
+    await app.listen();
   } catch (err: any) {
     Log.error('Something went wrong when initializing the server:\n', err.stack);
+    process.exit(1);
   }
 })();
+

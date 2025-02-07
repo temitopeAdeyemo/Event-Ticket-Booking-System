@@ -43,7 +43,8 @@ export class MorganConfig {
       stream: {
         write: (message) => {
           const data = JSON.parse(message);
-          const context: any = ContextHolder.getContext();
+          const context = ContextHolder.getContext();
+          
           const ns = context?.user?.email || GENERAL_NS;
           Log.systemLog(ns).http(`${getCurrentTime()}|request-info`, data);
         },
@@ -51,5 +52,5 @@ export class MorganConfig {
     }
   );
 
-  static requestSummaryMiddleware = morgan(':nigeria-time - :method :url :status :res[content-length] - :response-time ms :user-agent');
+  static requestSummaryMiddleware = morgan('[INFO MESSAGE] :nigeria-time - :method :url :status :res[content-length] - :response-time ms :user-agent');
 }

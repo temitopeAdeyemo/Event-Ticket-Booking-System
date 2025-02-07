@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { saltRounds } from '../../config';
 
-class Bcrypt {
+export class BcryptCLient {
   saltRounds: string | number;
   constructor() {
     this.saltRounds = saltRounds;
@@ -17,4 +17,3 @@ class Bcrypt {
     return comparedData;
   }
 }
-export default Bcrypt;

@@ -10,7 +10,7 @@ const { sendFailedResponse } = ResponseHandler;
 
 export class ErrorHandler {
   static init(error: Error, request: Request, response: Response, _: NextFunction) {
-    console.log(error);
+    console.log(error); // Do not remove.
     Log.error(error);
 
     let statusCode = HttpStatusCodes.INTERNAL_SERVER_ERROR;
