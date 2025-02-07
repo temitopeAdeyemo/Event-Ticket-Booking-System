@@ -9,3 +9,4 @@ scope.txt
 newrelic_agent.log
 package-lock.json
 yarn-lock.json
+a.js

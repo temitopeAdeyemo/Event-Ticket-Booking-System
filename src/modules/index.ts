@@ -5,7 +5,7 @@ import { bookingRouter } from './bookings/routes';
 const router = express.Router();
 
 router.use('/event', eventRouter)
-router.use('/book', bookingRouter)
+router.use('/booking', bookingRouter)
 router.use('/auth', authRouter)
 
 export default router;

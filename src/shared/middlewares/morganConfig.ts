@@ -52,5 +52,5 @@ export class MorganConfig {
     }
   );
 
-  static requestSummaryMiddleware = morgan('[INFO MESSAGE] :nigeria-time - :method :url :status :res[content-length] - :response-time ms :user-agent');
+  static requestSummaryMiddleware = morgan('[INFO MESSAGE]| :nigeria-time - :method :url :status :res[content-length] - :response-time ms :user-agent');
 }

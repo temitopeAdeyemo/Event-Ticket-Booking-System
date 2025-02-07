@@ -10,7 +10,7 @@ import { ResourceNotFound } from './shared/middlewares/ResourceNotFound';
 import { RateLimiter } from './shared/middlewares/RateLimiter';
 import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD, PORT } from './config';
 import { Log } from './shared/utils/Log';
-import { DataBase } from './config/Database.config';
+import { database } from './config/Database.config';
 import { Seedings } from './config/Seeding';
 import { container } from 'tsyringe';
 
@@ -28,12 +28,6 @@ export default class App {
     this.app.use(Morgan.httpRequestLogger);
     this.app.use(ResponseCaptureMiddleware.responseInterceptor);
     this.app.use(Morgan.requestSummaryMiddleware);
-
-    // this.app.use(ResponseCaptureMiddleware.responseInterceptor);
-    // this.app.use(AuthMiddleware.requestContextMiddleware);
-    // this.app.use(Morgan.httpRequestLogger);
-    // this.app.use(Morgan.requestSummaryMiddleware);
-    // this.app.use(RateLimiter.init);
 
     this.setRoutes();
 
@@ -56,7 +50,7 @@ export default class App {
   listen() {
     this.app
       .listen(PORT, async () => {
-        await DataBase.connectDb();
+        await database.connectDb();
         await this.createSuperAdmin().then(() => {
           Log.info(`👍 Server running on ${process.env.NODE_ENV} mode on port ${PORT}`);
           Log.info(

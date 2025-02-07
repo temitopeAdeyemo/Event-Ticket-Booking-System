@@ -6,6 +6,7 @@ import AppError from '../utils/AppError';
 import { HttpStatusCodes } from '../utils/HttpStatusCodes';
 import { NODE_ENV } from '../../config';
 import { ResponseHandler } from '../utils/ResponseHandler';
+import { TypeORMError } from 'typeorm';
 const { sendFailedResponse } = ResponseHandler;
 
 export class ErrorHandler {
@@ -27,6 +28,9 @@ export class ErrorHandler {
       const _ = ['body', 'query', 'params', 'headers'];
       message = _.map((key) => error.details.get(key)?.message).find((msg) => msg) || 'Validation error';
       statusCode = HttpStatusCodes.BAD_REQUEST;
+    } else if (error instanceof TypeORMError || (error as any).code == '53300') {
+      message = 'Unable to process request at the moment, Please try again later.';
+      statusCode = HttpStatusCodes.INTERNAL_SERVER_ERROR;
     }
 
     sendFailedResponse(response, statusCode, message, null, errorStack);

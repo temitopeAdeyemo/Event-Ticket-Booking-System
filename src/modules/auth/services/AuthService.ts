@@ -5,17 +5,15 @@ import { HttpStatusCodes } from '../../../shared/utils/HttpStatusCodes';
 import { Log } from '../../../shared/utils/Log';
 import { ILoginDTO } from '../dto/ILoginDto';
 import { UserRepository } from '../models/repository';
+import { injectable as Injectable, inject as Inject } from 'tsyringe';
 
+@Injectable()
 export default class AuthService {
-  private userRepository: UserRepository;
-  private passwordEncoder: PasswordEncoder;
-  private jwtClient: JwtClient;
-
-  constructor() {
-    this.userRepository = new UserRepository();
-    this.passwordEncoder = new PasswordEncoder();
-    this.jwtClient = new JwtClient();
-  }
+  constructor(
+    @Inject(UserRepository) private readonly userRepository: UserRepository,
+    @Inject(PasswordEncoder) private readonly passwordEncoder: PasswordEncoder,
+    @Inject(JwtClient) private readonly jwtClient: JwtClient
+  ) {}
 
   public async exec(data: ILoginDTO) {
     const user = await this.userRepository.findOneByData({ email: data.email });
@@ -25,7 +23,7 @@ export default class AuthService {
     }
 
     const accessToken = this.jwtClient.generateAccessToken({ email: user.email, id: user.id });
-    Log.info("Tracking logged in user.")
+    Log.info('Tracking logged in user.');
     return { accessToken };
   }
 }

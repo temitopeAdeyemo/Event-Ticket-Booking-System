@@ -11,7 +11,7 @@ export class RateLimiter {
   static redisClient = RedisClient.getInstance();
   static async init(request: Request, response: Response, next: NextFunction): Promise<void> {
     let key: any;
-    let controlledPath = ['/book', '/cancelled'];
+    let controlledPath:string[] = [];
     let user;
 
     if (request.headers['authorization'] && request.headers['authorization'].split(' ')[1]) {
@@ -32,7 +32,7 @@ export class RateLimiter {
     }
     try {
       const limiter = new RateLimiterRedis({
-        points: NODE_ENV == 'test' ? 50 : 5,
+        points: NODE_ENV == 'test' ? 5000 : 1000,
         duration: 5,
         storeClient: RateLimiter.redisClient,
       });

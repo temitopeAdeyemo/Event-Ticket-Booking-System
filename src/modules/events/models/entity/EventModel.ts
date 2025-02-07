@@ -18,10 +18,10 @@ export class EventModel implements IEventDTO {
   @Column({ nullable: true })
   totalTicket: number;
 
-  @OneToMany(() => Booking, (booking) => booking.event, { eager: true, cascade: ['insert', 'update', 'remove'] })
+  @OneToMany(() => Booking, (booking) => booking.event, { eager: false, cascade: ['insert', 'update', 'remove'] })
   bookings: Booking[];
 
-  @OneToMany(() => WaitList, (waitList) => waitList.event, { eager: true, cascade: ['insert', 'update', 'remove'] })
+  @OneToMany(() => WaitList, (waitList) => waitList.event, { eager: false, cascade: ['insert', 'update', 'remove'] })
   waitList: WaitList[];
 
   soldTicket: number;

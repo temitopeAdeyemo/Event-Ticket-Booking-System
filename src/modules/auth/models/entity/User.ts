@@ -18,9 +18,9 @@ export class User implements IUserDTO {
   @Column({ nullable: true, length: 50, name: "full_name" })
   public fullName: string;
 
-  @OneToMany(() => Booking, (booking) => booking.user, { eager: true, cascade: ['insert', 'update', 'remove'] })
+  @OneToMany(() => Booking, (booking) => booking.user, { eager: false, cascade: ['insert', 'update', 'remove'] })
   bookings: Booking[];
 
-  @OneToMany(() => WaitList, (waitList) => waitList.user, { eager: true, cascade: ['insert', 'update', 'remove'] })
+  @OneToMany(() => WaitList, (waitList) => waitList.user, { eager: false, cascade: ['insert', 'update', 'remove'] })
   waitListEntries: WaitList[];
 }

@@ -24,12 +24,12 @@ export const NEW_RELIC_LICENSE_KEY = process.env.NEW_RELIC_LICENSE_KEY;
 export const DB_APPLICATION_NAME = process.env.DB_APPLICATION_NAME;
 export const DB_SYNC = process.env.DB_SYNC == 'true';
 export const DB_LOGGING = process.env.DB_LOGGING == 'true';
-export const DEFAULT_USER_EMAIL=process.env.DEFAULT_USER_EMAIL
-export const DEFAULT_USER_PASSWORD=process.env.DEFAULT_USER_PASSWORD
+export const DEFAULT_USER_EMAIL = process.env.DEFAULT_USER_EMAIL;
+export const DEFAULT_USER_PASSWORD = process.env.DEFAULT_USER_PASSWORD;
+export const POOL_SIZE = Number(process.env.DB_POOL_SIZE) || 10;
 
 const requiredEnvVariables = ['DB_URL', 'PORT', 'NODE_ENV', 'JWT_EXPIRES_IN', 'NEW_RELIC_APP_NAME', 'NEW_RELIC_LICENSE_KEY'];
 
-// Load environment variables from the .env file
 const loadEnvVariables = (): void => {
   const result = dotenv.config();
 
@@ -38,7 +38,6 @@ const loadEnvVariables = (): void => {
     process.exit(1);
   }
 
-  // Check if each required environment variable is set
   requiredEnvVariables.forEach((envVar) => {
     const value = process.env[envVar];
     if (!value) {

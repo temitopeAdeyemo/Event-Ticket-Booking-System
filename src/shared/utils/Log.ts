@@ -65,14 +65,14 @@ export class Log {
   }
 
   public static info(message: any) {
-    console.log(`[INFO MESSAGE] ${getCurrentTime()}`, message);
+    console.log(`[INFO MESSAGE] ${getCurrentTime()}|`, message);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
     Log.systemLog(ns).info(`${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${message}`);
   }
 
   public static warn(message: any) {
-    console.warn(`[WARNING MESSAGE] ${getCurrentTime()}`, message);
+    console.warn(`[WARNING MESSAGE] ${getCurrentTime()}|`, message);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
     Log.systemLog(ns).warn(`${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${message}`);
@@ -80,14 +80,14 @@ export class Log {
 
   public static error(...errors: any) {
     errors = errors.map((error: any) => error?.message || error);
-    console.error(`[ERROR MESSAGE] ${getCurrentTime()}`, errors.join(''));
+    console.error(`[ERROR MESSAGE] ${getCurrentTime()}|`, errors.join(''));
     const context = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
     Log.systemLog(ns).error(`${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${errors.join(', ')}`);
   }
 
   public static debug(err: any) {
-    console.debug(`[DEBUG MESSAGE] ${getCurrentTime()}`, err.stack || err);
+    console.debug(`[DEBUG MESSAGE] ${getCurrentTime()}|`, err.stack || err);
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
     Log.systemLog(ns).debug(err);

@@ -1,21 +1,27 @@
+import { database } from '../../config/Database.config';
 import { QueryRunner } from 'typeorm';
-import { DataBase } from '../../config/Database.config';
-import AppError from './AppError';
-import { HttpStatusCodes } from './HttpStatusCodes';
+import { Log } from './Log';
 
 export class TransactionUtil {
   public static transactional = async <T>(operation: (queryRunner: QueryRunner) => Promise<T>): Promise<T> => {
-    const queryRunner = await DataBase.startTransaction();
+    const queryRunner = await database.startTransaction();
 
     try {
       const result = await operation(queryRunner);
       await queryRunner.commitTransaction();
       return result;
-    } catch (error) {
+    } catch (error: any) {
       await queryRunner.rollbackTransaction();
-      throw new AppError('Error occurred.', HttpStatusCodes.INTERNAL_SERVER_ERROR);
+      throw error;
     } finally {
-      await queryRunner.release();
+      await queryRunner
+        .release()
+        .then(() => {
+          Log.info('Transaction Released.');
+        })
+        .catch((error) => {
+          Log.error('******************************** UNABLE TO RELEASE', error?.message);
+        });
     }
   };
 }
