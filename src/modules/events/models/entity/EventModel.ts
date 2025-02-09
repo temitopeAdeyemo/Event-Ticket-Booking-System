@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { IEventDTO } from '../../dto/IEvent';
 import { Booking } from '../../../bookings/models/entity/Booking';
 import { WaitList } from './Waitlist';
@@ -23,6 +23,15 @@ export class EventModel implements IEventDTO {
 
   @OneToMany(() => WaitList, (waitList) => waitList.event, { eager: false, cascade: ['insert', 'update', 'remove'] })
   waitList: WaitList[];
+
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
+  public created_at: Date | any;
+
+  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
+  public updated_at: Date | any;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  public deleted_at: Date | any;
 
   soldTicket: number;
 }

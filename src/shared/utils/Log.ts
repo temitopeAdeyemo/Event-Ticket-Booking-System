@@ -64,11 +64,11 @@ export class Log {
     return logger;
   }
 
-  public static info(message: any) {
-    console.log(`[INFO MESSAGE] ${getCurrentTime()}|`, message);
+  public static info(...messages: any) {
+    console.log(`[INFO MESSAGE] ${getCurrentTime()}|`, messages.join(''));
     const context: any = ContextHolder.getContext();
     const ns = context?.user?.email || context?.user?.token || GENERAL_NS;
-    Log.systemLog(ns).info(`${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${message}`);
+    Log.systemLog(ns).info(`${ns && ns != GENERAL_NS ? ns + ' -> ' : ''}${messages.join(' ')}`);
   }
 
   public static warn(message: any) {

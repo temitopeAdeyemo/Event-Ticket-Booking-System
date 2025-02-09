@@ -1,5 +1,5 @@
 import { DataSource, QueryRunner } from 'typeorm';
-import { DB_APPLICATION_NAME, DB_URL, DB_SYNC, DB_LOGGING, POOL_SIZE } from './index';
+import { DB_APPLICATION_NAME, DB_URL, DB_SYNC, DB_LOGGING } from './index';
 import { Log } from '../shared/utils/Log';
 
 class Database {
@@ -12,11 +12,12 @@ class Database {
       synchronize: DB_SYNC,
       logging: DB_LOGGING,
       migrationsRun: true,
-      poolSize: POOL_SIZE,
-      entities: ['./dist/modules/**/models/entity/*.js'],
+      entities: ['./src/modules/**/models/entity/*.ts'],
       migrations: ['./src/shared/migrations/*.ts'],
+      dropSchema: DB_SYNC,
       applicationName: DB_APPLICATION_NAME,
     });
+    Log.info('Db config: ', JSON.stringify({ type: 'postgres', url: DB_URL, synchronize: DB_SYNC, dropSchema: DB_SYNC }));
   }
 
   public connectDb = async () => {
@@ -27,6 +28,14 @@ class Database {
       Log.error('Something went wrong when connecting to the database:\n', err.stack);
     }
   };
+  public async disconnectDb() {
+    try {
+      await this.AppDataSource.destroy();
+      Log.info('Database disconnected.');
+    } catch (err: any) {
+      Log.error('Database disconnection failed:', err.stack);
+    }
+  }
 
   public async startTransaction(): Promise<QueryRunner> {
     const queryRunner = this.AppDataSource.createQueryRunner();

@@ -26,7 +26,9 @@ export class Seedings {
 
       const accessToken = this.jwtClient.generateAccessToken({ email: user.email, id: user.id });
 
-      return { accessToken };
+      return {
+        message: `A default user and access token has been generated for testing purposes.\nEmail: ${DEFAULT_USER_EMAIL}\nPassword: ${DEFAULT_USER_PASSWORD}\naccess_token: ${accessToken}`,
+      };
     } catch (error) {
       Log.error(error);
       process.exit(1);

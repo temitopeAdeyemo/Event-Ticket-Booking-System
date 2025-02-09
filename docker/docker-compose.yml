@@ -3,14 +3,14 @@ version: "3.8"
 services:
   api:
     build:
-      context: .
+      context: ../
       dockerfile: docker/dev/Dockerfile
     image: event-ticket-api
     container_name: event-ticket-api
     ports:
       - "50051:50051"
     volumes:
-      - .:/app
+      - ../:/app
       - /app/node_modules
     networks:
       - event-ticket-network

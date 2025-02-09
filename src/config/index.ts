@@ -3,7 +3,8 @@ import { Log } from '../shared/utils/Log';
 dotenv.config();
 
 export const NODE_ENV = process.env.NODE_ENV || 'development';
-export const DB_URL = NODE_ENV == 'development' ? process.env.DB_URL_DEV : process.env.DB_URL;
+export const DB_URL =
+  NODE_ENV == 'development' ? process.env.DB_URL_DEV : NODE_ENV == 'production' ? process.env.DB_URL : process.env.DB_URL_TEST;
 export const PORT = process.env.PORT || 3000;
 export const JWT_KEY = process.env.JWT_KEY || 'somekey';
 export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1d';
@@ -22,11 +23,12 @@ export const GENERAL_NS = process.env.GENERAL_NS || 'general-log';
 export const NEW_RELIC_APP_NAME = process.env.NEW_RELIC_APP_NAME;
 export const NEW_RELIC_LICENSE_KEY = process.env.NEW_RELIC_LICENSE_KEY;
 export const DB_APPLICATION_NAME = process.env.DB_APPLICATION_NAME;
-export const DB_SYNC = process.env.DB_SYNC == 'true';
+export const DB_SYNC = NODE_ENV == 'test' ? true : false;
 export const DB_LOGGING = process.env.DB_LOGGING == 'true';
 export const DEFAULT_USER_EMAIL = process.env.DEFAULT_USER_EMAIL;
 export const DEFAULT_USER_PASSWORD = process.env.DEFAULT_USER_PASSWORD;
 export const POOL_SIZE = Number(process.env.DB_POOL_SIZE) || 10;
+export const DB_URL_TEST = process.env.DB_URL_TEST || '';
 
 const requiredEnvVariables = ['DB_URL', 'PORT', 'NODE_ENV', 'JWT_EXPIRES_IN', 'NEW_RELIC_APP_NAME', 'NEW_RELIC_LICENSE_KEY'];
 

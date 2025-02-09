@@ -16,7 +16,7 @@ class RedisClient {
 
     this.instance.on('connect', () => Log.info('Redis connected'));
     this.instance.on('ready', () => Log.info('Redis ready for connection'));
-    this.instance.on('end', () => Log.info('Redis connection ended'));
+    this.instance.on('end', () => null);
     this.instance.on('error', (error) => {
       Log.error('Redis Error: ' + error.message);
       process.exit(0);

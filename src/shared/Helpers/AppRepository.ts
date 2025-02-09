@@ -43,7 +43,10 @@ export class AppRepository<T extends ObjectLiteral> {
     return this.ormRepository.find({ where: filter });
   }
 
-  async count(filter: FindOptionsWhere<T> | FindOptionsWhere<T>[]) {
-    return this.ormRepository.count({ where: filter });
+  async count(filter: FindOptionsWhere<T> | FindOptionsWhere<T>[], queryRunner?: QueryRunner) {
+    if (queryRunner) {
+      return await queryRunner.manager.count(this.ormRepository.target, { where: filter });
+    }
+    return await this.ormRepository.count({ where: filter });
   }
 }

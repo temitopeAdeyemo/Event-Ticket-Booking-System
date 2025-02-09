@@ -1,5 +1,5 @@
 import { IUserDTO } from 'modules/auth/dto';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn  } from 'typeorm';
 import { Booking } from '../../../bookings/models/entity/Booking';
 import { WaitList } from '../../../events/models/entity/Waitlist';
 
@@ -23,4 +23,13 @@ export class User implements IUserDTO {
 
   @OneToMany(() => WaitList, (waitList) => waitList.user, { eager: false, cascade: ['insert', 'update', 'remove'] })
   waitListEntries: WaitList[];
+
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
+  public created_at: Date | any;
+
+  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
+  public updated_at: Date | any;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  public deleted_at: Date | any;
 }

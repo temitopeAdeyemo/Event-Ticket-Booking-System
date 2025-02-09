@@ -8,16 +8,13 @@ import { ResponseCaptureMiddleware } from './shared/middlewares/ResponseIntercep
 import { MorganConfig as Morgan } from './shared/middlewares/MorganConfig';
 import { ResourceNotFound } from './shared/middlewares/ResourceNotFound';
 import { RateLimiter } from './shared/middlewares/RateLimiter';
-import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD, PORT } from './config';
+import { PORT } from './config';
 import { Log } from './shared/utils/Log';
 import { database } from './config/Database.config';
 import { Seedings } from './config/Seeding';
 import { container } from 'tsyringe';
-
 export default class App {
   public app: express.Application;
-  private accessToken: string;
-
   constructor() {
     this.app = express();
 
@@ -28,21 +25,33 @@ export default class App {
     this.app.use(Morgan.httpRequestLogger);
     this.app.use(ResponseCaptureMiddleware.responseInterceptor);
     this.app.use(Morgan.requestSummaryMiddleware);
-
     this.setRoutes();
 
     this.app.all('*', ResourceNotFound.init);
     this.app.use(ErrorHandler.init);
   }
 
-  async createSuperAdmin() {
-    this.accessToken = (await container.resolve(Seedings).exec()).accessToken;
+  async createDefaultUser() {
+    try {
+      const { message } = await container.resolve(Seedings).exec();
+      Log.info(message);
+    } catch (error) {
+      console.log('Could not create default user on start up.');
+    }
   }
 
   setRoutes() {
     this.app.use('/api/v1', routes);
   }
 
+  public async connectDatabase() {
+    await database.connectDb();
+    await this.createDefaultUser();
+  }
+
+  public async disconnectDatabase() {
+    await database.disconnectDb();
+  }
   getApp() {
     return this.app;
   }
@@ -50,13 +59,17 @@ export default class App {
   listen() {
     this.app
       .listen(PORT, async () => {
-        await database.connectDb();
-        await this.createSuperAdmin().then(() => {
-          Log.info(`👍 Server running on ${process.env.NODE_ENV} mode on port ${PORT}`);
-          Log.info(
-            `A default user and access token has been generated for testing purposes. \nEmail: ${DEFAULT_USER_EMAIL}\nPassword: ${DEFAULT_USER_PASSWORD}\naccess_token: ${this.accessToken}`
-          );
-        });
+        console.log(
+          '||----|||||************************************************************************************************|||----|||'
+        );
+        await this.connectDatabase();
+        // await database.connectDb();
+        // .then(() => {
+        Log.info(`👍 Server running on ${process.env.NODE_ENV} mode on port ${PORT}`);
+        // Log.info(
+        //   `A default user and access token has been generated for testing purposes. \nEmail: ${DEFAULT_USER_EMAIL}\nPassword: ${DEFAULT_USER_PASSWORD}\naccess_token: ${this.accessToken}`
+        // );
+        // });
       })
       .on('error', (err) => {
         Log.error('Failed to listen', err.message);

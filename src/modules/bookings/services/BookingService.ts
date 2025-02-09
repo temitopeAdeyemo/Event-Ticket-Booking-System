@@ -23,7 +23,7 @@ export class BookingService {
 
       if (!event) throw new AppError('Event not found.', HttpStatusCodes.BAD_REQUEST);
 
-      const totalBookings = await this.bookingRepository.count({ event: { id: event.id } });
+      const totalBookings = await this.bookingRepository.count({ event: { id: data.eventId } }, queryRunner);
 
       if (totalBookings + 1 > event!.totalTicket) {
         const newWaitList = await this.waitListRepository.create({ event, user: user! }, false);
