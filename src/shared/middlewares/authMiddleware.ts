@@ -5,6 +5,9 @@ import JwtClient from '../services/JwtClient';
 import { ContextHolder } from '../utils/ContextHolder';
 import { AuthUserPayload } from '../types/express';
 import { Log } from '../utils/Log';
+import { GetUserService } from '../../modules/auth/services';
+import { container } from 'tsyringe';
+import { HttpStatusCodes } from '../utils/HttpStatusCodes';
 
 export class AuthMiddleware {
   static requestContextMiddleware = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -29,9 +32,11 @@ export class AuthMiddleware {
     } catch (error) {
       ContextHolder.setContext({ user: { token } });
       this.logRequestInitializationTime();
-      throw error;
+      throw new AppError('Authentication Failed.', HttpStatusCodes.FORBIDDEN);
     }
-    
+
+    container.resolve(GetUserService).findOne({ id: isAuthenticated.id });
+
     req.currentUser = isAuthenticated;
 
     let user: any = { ...req.currentUser };

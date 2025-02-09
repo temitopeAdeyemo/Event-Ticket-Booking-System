@@ -1,3 +1,5 @@
-import { BookingService } from './BookingService';
+import { CancelBookingService } from './CancelBookingService';
+import { CreateBookingService } from './CreateBookingService';
+import { GetBookingService } from './GetBookingService';
 
-export { BookingService };
+export { CreateBookingService, CancelBookingService, GetBookingService };

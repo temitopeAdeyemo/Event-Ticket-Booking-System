@@ -36,7 +36,7 @@ export default class App {
       const { message } = await container.resolve(Seedings).exec();
       Log.info(message);
     } catch (error) {
-      console.log('Could not create default user on start up.');
+      Log.error('Could not create default user on start up.');
     }
   }
 
@@ -59,17 +59,8 @@ export default class App {
   listen() {
     this.app
       .listen(PORT, async () => {
-        console.log(
-          '||----|||||************************************************************************************************|||----|||'
-        );
         await this.connectDatabase();
-        // await database.connectDb();
-        // .then(() => {
         Log.info(`👍 Server running on ${process.env.NODE_ENV} mode on port ${PORT}`);
-        // Log.info(
-        //   `A default user and access token has been generated for testing purposes. \nEmail: ${DEFAULT_USER_EMAIL}\nPassword: ${DEFAULT_USER_PASSWORD}\naccess_token: ${this.accessToken}`
-        // );
-        // });
       })
       .on('error', (err) => {
         Log.error('Failed to listen', err.message);

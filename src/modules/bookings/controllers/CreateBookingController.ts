@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { BookingService } from '../services';
+import { CreateBookingService } from '../services';
 import { ResponseHandler } from '../../../shared/utils/ResponseHandler';
 import { HttpStatusCodes } from '../../../shared/utils/HttpStatusCodes';
 const { sendSuccessResponse } = ResponseHandler;
@@ -8,12 +8,17 @@ import { catchAsync } from '../../../shared/utils/catchAsync';
 
 @Injectable()
 export class CreateBookingController {
-  constructor(@Inject(BookingService) private readonly bookingService: BookingService) {}
+  constructor(
+    @Inject(CreateBookingService) private readonly bookingService: CreateBookingService,
+  ) {}
 
   public bookEvent = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { eventId } = req.body;
+
     const response = await this.bookingService.createBooking({ userId: req.currentUser!.id, eventId });
+
     const message = response.bookingId ? 'Booking created successfully.' : 'You have been added to the waitlist.';
+
     sendSuccessResponse(res, HttpStatusCodes.CREATED, message, response);
   });
 }

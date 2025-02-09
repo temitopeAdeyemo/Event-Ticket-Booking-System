@@ -1,6 +1,6 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  setupFilesAfterEnv: ['./src/tests/jest.setup.ts'],
+  setupFilesAfterEnv: ['./src/tests/config/jest.setup.ts'],
   testMatch: ['**/tests/**/*.test.ts']
 };

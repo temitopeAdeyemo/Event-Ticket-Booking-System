@@ -15,8 +15,8 @@ export class EventModel implements IEventDTO {
   @Column({ nullable: true, length: 250 })
   description: string;
 
-  @Column({ nullable: true })
-  totalTicket: number;
+  @Column({ nullable: true, name: 'total_ticket_slots' })
+  totalTicketSlot: number;
 
   @OneToMany(() => Booking, (booking) => booking.event, { eager: false, cascade: ['insert', 'update', 'remove'] })
   bookings: Booking[];

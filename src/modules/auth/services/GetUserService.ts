@@ -1,3 +1,5 @@
+import AppError from '../../../shared/utils/AppError';
+import { HttpStatusCodes } from '../../../shared/utils/HttpStatusCodes';
 import { IUserDTO } from '../dto';
 import { UserRepository } from '../models/repository';
 import { injectable as Injectable, inject as Inject } from 'tsyringe';
@@ -9,7 +11,7 @@ export default class GetUserService {
   public async findOne(data: Partial<IUserDTO>, throwErrIfNotFound = true) {
     const user = await this.userRepository.findOneByData(data);
 
-    if (!user && throwErrIfNotFound) throw new Error('User not found.');
+    if (!user && throwErrIfNotFound) throw new AppError('User not found.', HttpStatusCodes.BAD_REQUEST);
 
     return user;
   }

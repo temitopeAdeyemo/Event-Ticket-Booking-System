@@ -12,9 +12,16 @@ const { sendSuccessResponse } = ResponseHandler;
 export class InitialiseEventController {
   constructor(@Inject(EventService) private readonly eventService: EventService) {}
 
+  eventStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { eventId } = req.params;
+    const { availableTickets, waitingListCount } = await this.eventService.eventStatus(eventId);
+
+    sendSuccessResponse(res, HttpStatusCodes.OK, 'Event status fetched successfully.', { availableTickets, waitingListCount });
+  });
+
   public initialize = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { description, totalTicket, eventName } = req.body as IEventDTO;
-    const { id } = await this.eventService.createEvent({ description, totalTicket, eventName });
+    const { description, totalTicketSlot, eventName } = req.body as IEventDTO;
+    const { id } = await this.eventService.createEvent({ description, totalTicketSlot, eventName });
 
     sendSuccessResponse(res, HttpStatusCodes.CREATED, 'Event created successfully.', { id });
   });

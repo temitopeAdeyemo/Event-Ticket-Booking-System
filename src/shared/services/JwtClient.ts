@@ -1,15 +1,11 @@
 import { sign, verify } from 'jsonwebtoken';
-import { jwtAccessTokenSecret, jwtRefreshTokenSecret } from '../../config';
-import AppError from '../utils/AppError';
-import { HttpStatusCodes } from '../utils/HttpStatusCodes';
+import { jwtAccessTokenSecret } from '../../config';
 
 export class JwtClient {
   private accessTokenSecret: string;
-  private refreshTokenSecret: string;
 
   constructor() {
     this.accessTokenSecret = jwtAccessTokenSecret;
-    this.refreshTokenSecret = jwtRefreshTokenSecret;
   }
 
   /**
@@ -31,10 +27,6 @@ export class JwtClient {
    * @param payload - The payload containing the user data to be included in the token.
    * @returns The generated refresh token as a string.
    */
-  generateRefreshToken(payload: any): string {
-    payload.type = 'refresh';
-    return sign(payload, this.refreshTokenSecret, { expiresIn: '1500' });
-  }
 
   /**
    * Verifies the provided access token using the access token secret.
@@ -44,19 +36,6 @@ export class JwtClient {
    */
   verifyAccessToken(token: string): any {
     return verify(token, this.accessTokenSecret);
-  }
-
-  /**
-   * Verifies the provided refresh token using the refresh token secret.
-   *
-   * @param token - The refresh token to be verified.
-   * @returns The decoded payload of the token if it is valid, otherwise throws an AppError with status code 401.
-   */
-  verifyRefreshToken(token: any): any {
-    if (token.type !== 'refresh') {
-      throw new AppError('Invalid token type', HttpStatusCodes.FORBIDDEN);
-    }
-    return verify(token, this.refreshTokenSecret);
   }
 }
 

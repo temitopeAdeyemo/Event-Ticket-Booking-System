@@ -15,6 +15,6 @@ export class RegisterUserController {
 
     const { id } = await this.registerUserService.exec({ email, password, fullName });
 
-    sendSuccessResponse(res, HttpStatusCodes.OK, 'User created successfully.', { id });
+    sendSuccessResponse(res, HttpStatusCodes.CREATED, 'User created successfully.', { id });
   });
 }

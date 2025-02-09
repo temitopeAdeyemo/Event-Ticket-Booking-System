@@ -1,4 +1,4 @@
-import { Repository, DeepPartial, EntityTarget, ObjectLiteral, FindOptionsWhere, QueryRunner } from 'typeorm';
+import { Repository, DeepPartial, EntityTarget, ObjectLiteral, FindOptionsWhere, QueryRunner, FindOptionsOrder, FindOptionsRelations } from 'typeorm';
 import { AppDataSource } from '../../config/Database.config';
 
 export class AppRepository<T extends ObjectLiteral> {
@@ -19,16 +19,18 @@ export class AppRepository<T extends ObjectLiteral> {
     return await this.ormRepository.update(filter, updateData);
   }
 
-  async delete(criteria: string | string[] | FindOptionsWhere<T>) {
-    await this.ormRepository.delete(criteria);
+  async delete(criteria: string | string[] | FindOptionsWhere<T>, queryRunner?: QueryRunner) {
+    if (queryRunner) {
+      return await queryRunner.manager.softDelete(this.ormRepository.target, criteria);
+    }    await this.ormRepository.softDelete(criteria);
   }
 
-  async findOneByData(filter: FindOptionsWhere<T> | FindOptionsWhere<T>[]): Promise<T | null> {
-    return this.ormRepository.findOne({ where: filter });
+  async findOneByData(filter: FindOptionsWhere<T> | FindOptionsWhere<T>[], relations?: FindOptionsRelations<T>): Promise<T | null> {
+    return this.ormRepository.findOne({ where: filter, relations },);
   }
 
-  async findOneByDataAndLock(queryRunner: QueryRunner, filter: FindOptionsWhere<T> | FindOptionsWhere<T>[]): Promise<T | null> {
-    return await queryRunner.manager.findOne(this.ormRepository.target, { where: filter, lock: { mode: 'pessimistic_write' } });
+  async findOneByDataAndLock(queryRunner: QueryRunner, filter: FindOptionsWhere<T> | FindOptionsWhere<T>[], order?: FindOptionsOrder<T> | undefined): Promise<T | null> {
+    return await queryRunner.manager.findOne(this.ormRepository.target, { where: filter, lock: { mode: 'pessimistic_write' }, order });
   }
 
   async findOneById(id: T['id']): Promise<T | null> {
@@ -39,7 +41,7 @@ export class AppRepository<T extends ObjectLiteral> {
     return await this.ormRepository.save(document);
   }
 
-  async findAll(filter: FindOptionsWhere<T> | FindOptionsWhere<T>[]): Promise<T[]> {
+  async findAll(filter?: FindOptionsWhere<T> | FindOptionsWhere<T>[]): Promise<T[]> {
     return this.ormRepository.find({ where: filter });
   }
 

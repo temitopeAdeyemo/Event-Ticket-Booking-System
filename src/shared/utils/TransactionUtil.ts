@@ -20,7 +20,7 @@ export class TransactionUtil {
           Log.info('Transaction Released.');
         })
         .catch((error) => {
-          Log.error('******************************** UNABLE TO RELEASE', error?.message);
+          Log.error('UNABLE TO RELEASE', error?.message);
         });
     }
   };

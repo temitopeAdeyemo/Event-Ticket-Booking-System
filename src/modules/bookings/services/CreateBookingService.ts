@@ -7,7 +7,7 @@ import { BookingRepository } from '../models/repository';
 import { injectable as Injectable, inject as Inject } from 'tsyringe';
 
 @Injectable()
-export class BookingService {
+export class CreateBookingService {
   constructor(
     @Inject(BookingRepository) private readonly bookingRepository: BookingRepository,
     @Inject(EventRepository) private readonly eventRepository: EventRepository,
@@ -25,7 +25,7 @@ export class BookingService {
 
       const totalBookings = await this.bookingRepository.count({ event: { id: data.eventId } }, queryRunner);
 
-      if (totalBookings + 1 > event!.totalTicket) {
+      if (totalBookings + 1 > event!.totalTicketSlot) {
         const newWaitList = await this.waitListRepository.create({ event, user: user! }, false);
         await queryRunner.manager.save(newWaitList);
         return { bookingId: null, waitListId: newWaitList.id };
