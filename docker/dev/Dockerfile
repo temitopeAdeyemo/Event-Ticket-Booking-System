@@ -15,7 +15,7 @@ RUN npm install -g typescript
 
 RUN npm install
 
-EXPOSE 50051
+EXPOSE 3002
 
 COPY --chown=node:node . .
 

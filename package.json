@@ -4,7 +4,7 @@
   "description": "EventModel Ticket Booking System",
   "main": "src/server.js",
   "scripts": {
-    "start": "test && tsc && node -r newrelic dist/server.js",
+    "start": "'ts-node' -r newrelic dist/server.js",
     "compile": "tsc",
     "start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' -r newrelic src/server.ts",
     "test": "NODE_ENV=test jest ./src/tests --coverage --detectOpenHandles",
