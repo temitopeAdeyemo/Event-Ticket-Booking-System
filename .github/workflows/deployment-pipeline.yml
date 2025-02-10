@@ -22,8 +22,8 @@ jobs:
         uses: azure/docker-login@v1
         with:
           login-server: docker.io
-          username: ${{ secrets.NEW_ACR_USERNAME }}
-          password: ${{ secrets.NEW_ACR_PASSWORD }}
+          username: wheelerthegreat
+          password: dckr_pat_5tNzM3yoKarPmc_7RrIg9g37uik
           
       - name: Build the Docker image
         run: docker build . --file ./docker/dev/Dockerfile --tag event-ticket
