@@ -15,5 +15,11 @@ else
     echo "Migration up completed successfully."
   fi
 fi
-
+npm run test
+  if [ $? -ne 0 ]; then
+    echo "Test passed. Continuing..."
+    exit 1
+  else
+    echo "Test Failed, Halting  down process."
+  fi
 npm run start

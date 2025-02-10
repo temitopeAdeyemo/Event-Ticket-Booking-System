@@ -19,12 +19,12 @@ export default class App {
     this.app = express();
 
     this.app.use(express.json());
-
     this.app.use(RateLimiter.init);
     this.app.use(AuthMiddleware.requestContextMiddleware);
     this.app.use(Morgan.httpRequestLogger);
     this.app.use(ResponseCaptureMiddleware.responseInterceptor);
     this.app.use(Morgan.requestSummaryMiddleware);
+
     this.setRoutes();
 
     this.app.all('*', ResourceNotFound.init);

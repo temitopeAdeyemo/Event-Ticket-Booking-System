@@ -1,4 +1,13 @@
-import { Repository, DeepPartial, EntityTarget, ObjectLiteral, FindOptionsWhere, QueryRunner, FindOptionsOrder, FindOptionsRelations } from 'typeorm';
+import {
+  Repository,
+  DeepPartial,
+  EntityTarget,
+  ObjectLiteral,
+  FindOptionsWhere,
+  QueryRunner,
+  FindOptionsOrder,
+  FindOptionsRelations,
+} from 'typeorm';
 import { AppDataSource } from '../../config/Database.config';
 
 export class AppRepository<T extends ObjectLiteral> {
@@ -22,15 +31,27 @@ export class AppRepository<T extends ObjectLiteral> {
   async delete(criteria: string | string[] | FindOptionsWhere<T>, queryRunner?: QueryRunner) {
     if (queryRunner) {
       return await queryRunner.manager.softDelete(this.ormRepository.target, criteria);
-    }    await this.ormRepository.softDelete(criteria);
+    }
+    await this.ormRepository.softDelete(criteria);
   }
 
   async findOneByData(filter: FindOptionsWhere<T> | FindOptionsWhere<T>[], relations?: FindOptionsRelations<T>): Promise<T | null> {
-    return this.ormRepository.findOne({ where: filter, relations },);
+    return this.ormRepository.findOne({ where: filter, relations });
   }
 
-  async findOneByDataAndLock(queryRunner: QueryRunner, filter: FindOptionsWhere<T> | FindOptionsWhere<T>[], order?: FindOptionsOrder<T> | undefined): Promise<T | null> {
-    return await queryRunner.manager.findOne(this.ormRepository.target, { where: filter, lock: { mode: 'pessimistic_write' }, order });
+  async findOneByDataAndLock(
+    queryRunner: QueryRunner,
+    filter: FindOptionsWhere<T> | FindOptionsWhere<T>[],
+    order?: FindOptionsOrder<T> | undefined,
+    relations?: FindOptionsRelations<T>,
+    tables?: string[] | undefined
+  ): Promise<T | null> {
+    return await queryRunner.manager.findOne(this.ormRepository.target, {
+      where: filter,
+      lock: { mode: 'pessimistic_write', tables },
+      order,
+      relations,
+    });
   }
 
   async findOneById(id: T['id']): Promise<T | null> {

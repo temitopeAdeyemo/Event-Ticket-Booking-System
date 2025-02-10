@@ -6,7 +6,7 @@
   "scripts": {
     "start": "test && tsc && node -r newrelic dist/server.js",
     "start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' -r newrelic src/server.ts",
-    "test": "NODE_ENV=test jest --config jest.config.js",
+    "test": "NODE_ENV=test jest ./src/tests --coverage --detectOpenHandles",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d ./src/config/DataBase.config.ts ./src/shared/migrations/migrations",
     "migration:up": "typeorm-ts-node-commonjs migration:run -d ./src/config/DataBase.config.ts",
     "migration:down": "typeorm-ts-node-commonjs migration:revert -d ./src/config/DataBase.config.ts"
@@ -14,6 +14,7 @@
   "author": "Adeyemo Temitope Julius",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "celebrate": "^15.0.3",
     "cors": "^2.8.5",
@@ -24,6 +25,7 @@
     "moment-timezone": "^0.5.47",
     "morgan": "^1.10.0",
     "newrelic": "^12.11.3",
+    "node-cron": "^3.0.3",
     "path": "^0.12.7",
     "pg": "^8.13.1",
     "rate-limiter-flexible": "^5.0.3",
@@ -45,6 +47,7 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9",
+    "@types/node-cron": "^3.0.11",
     "@types/supertest": "^6.0.2",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",

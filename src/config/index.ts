@@ -29,6 +29,8 @@ export const DEFAULT_USER_EMAIL = process.env.DEFAULT_USER_EMAIL;
 export const DEFAULT_USER_PASSWORD = process.env.DEFAULT_USER_PASSWORD;
 export const POOL_SIZE = Number(process.env.DB_POOL_SIZE) || 10;
 export const DB_URL_TEST = process.env.DB_URL_TEST || '';
+export const BASE_URL = process.env.BASE_URL || 'http://localhost:3002';
+export const HEALTH_CRON = process.env.HEALTH_CRON || '*/10 * * * * *';
 
 const requiredEnvVariables = ['DB_URL', 'PORT', 'NODE_ENV', 'JWT_EXPIRES_IN', 'NEW_RELIC_APP_NAME', 'NEW_RELIC_LICENSE_KEY'];
 
