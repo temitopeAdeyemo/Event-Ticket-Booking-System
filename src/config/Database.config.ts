@@ -11,7 +11,7 @@ class Database {
       url: DB_URL,
       synchronize: DB_SYNC,
       logging: DB_LOGGING,
-      migrationsRun: true,
+      // migrationsRun: DB_SYNC,
       entities: ['./src/modules/**/models/entity/*.ts'],
       migrations: ['./src/shared/migrations/*.ts'],
       dropSchema: DB_SYNC,

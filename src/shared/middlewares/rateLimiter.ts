@@ -8,10 +8,12 @@ import { NODE_ENV } from '../../config';
 import RedisClient from '../services/RedisClient';
 
 export class RateLimiter {
-  static redisClient = RedisClient.getInstance();
+  public static redisClient = RedisClient.getInstance();
+  public static duration = 0;
   static async init(request: Request, response: Response, next: NextFunction): Promise<void> {
     let key: any;
-    let controlledPath:string[] = [];
+    // let controlledPath: string[] = ['/book', '/cancel'];
+    let controlledPath: string[] = [];
     let user;
 
     if (request.headers['authorization'] && request.headers['authorization'].split(' ')[1]) {
@@ -25,17 +27,19 @@ export class RateLimiter {
         Log.warn(
           `ERROR: ${error.message || 'Invalid session id.'} on path: ${
             request.path
-          }from user with invalid or expired JWT. Please try again later.`
+          }from user with invalid or expired JWT.`
         );
         return next(new AppError(error.message || 'Invalid session id.', HttpStatusCodes.FORBIDDEN));
       }
     }
     try {
+      let duration = 5;
       const limiter = new RateLimiterRedis({
-        points: NODE_ENV == 'test' ? 5000 : 1000,
-        duration: 5,
+        points: NODE_ENV == 'test' ? 5000 : 200,
+        duration,
         storeClient: RateLimiter.redisClient,
       });
+      RateLimiter.duration = duration;
 
       key = key || request.ip;
 
@@ -43,7 +47,9 @@ export class RateLimiter {
         if (request.path.includes(path)) {
           Log.info('HITTING CONTROLLED ENDPOINT...');
           limiter.points = NODE_ENV == 'test' ? 500 : 1;
-          limiter.duration = 10;
+          limiter.duration = 1;
+
+          RateLimiter.duration = limiter.duration;
 
           await limiter.consume(`trans-${path}-${key}`);
 
@@ -55,11 +61,11 @@ export class RateLimiter {
       return next();
     } catch (error) {
       if (request.headers['authorization'] && request.headers['authorization'].split(' ')[1]) {
-        Log.warn('WARNING: Too many requests on path: ' + request.path + ' from: ' + user.email + '. Please try again later.');
-        return next(new AppError(`System busy, Try again in a moment.`, HttpStatusCodes.TOO_MANY_REQUESTS));
+        Log.warn('WARNING: Too many requests on path: ' + request.path + ' from: ' + user.email + '.');
+        return next(new AppError(`Processing request, Try again in ${RateLimiter.duration}secs.`, HttpStatusCodes.TOO_MANY_REQUESTS));
       }
-      Log.warn('WARNING: Too many requests on path: ' + request.path + ' from: user with NO JWT. Please try again later.');
-      return next(new AppError(`System busy, Try again in a moment.`, HttpStatusCodes.TOO_MANY_REQUESTS));
+      Log.warn('WARNING: Too many requests on path: ' + request.path + ' from: user with NO JWT.');
+      return next(new AppError(`Processing request, Try again in ${RateLimiter.duration}secs..`, HttpStatusCodes.TOO_MANY_REQUESTS));
     }
   }
 }

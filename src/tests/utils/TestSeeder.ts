@@ -45,12 +45,14 @@ class TestSeeder {
       eventName: 'Tech Conference 2025',
       description: 'A conference for tech enthusiasts',
       totalTicketSlot: 1,
+      eventDate: '2025-09-09',
     };
 
     const event2 = {
       eventName: 'Music Festival',
       description: 'A large-scale music event',
       totalTicketSlot: 40,
+      eventDate: '2025-09-09',
     };
 
     const events = await this.eventRepository.save([this.eventRepository.create(event1), this.eventRepository.create(event2)]);

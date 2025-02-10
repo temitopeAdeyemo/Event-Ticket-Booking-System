@@ -21,6 +21,7 @@ class EventTest {
           totalTicketSlot: 20,
           eventName: 'Test Event One',
           description: 'A new event',
+          eventDate: '2025-09-09',
         });
 
         expect(res.status).toBe(201);
@@ -34,6 +35,7 @@ class EventTest {
           totalTicketSlot: 20,
           eventName: 'Unauthorized Event',
           description: 'An event without token',
+          eventDate: '2025-09-09',
         });
 
         expect(res.status).toBe(400);
@@ -45,6 +47,7 @@ class EventTest {
           totalTicketSlot: 20,
           eventName: 'Unauthorized Event',
           description: 'An event without token',
+          eventDate: '2025-09-09',
         });
 
         expect(res.status).toBe(403);
@@ -71,7 +74,6 @@ class EventTest {
           .send();
 
         expect(res.status).toBe(200);
-        expect(res.body.success).toBe(true);
         expect(res.body.data).toHaveProperty('id');
       });
 

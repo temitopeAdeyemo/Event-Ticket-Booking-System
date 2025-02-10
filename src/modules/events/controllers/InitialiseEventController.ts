@@ -20,8 +20,8 @@ export class InitialiseEventController {
   });
 
   public initialize = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { description, totalTicketSlot, eventName } = req.body as IEventDTO;
-    const { id } = await this.eventService.createEvent({ description, totalTicketSlot, eventName });
+    const { description, totalTicketSlot, eventName, eventDate } = req.body as IEventDTO;
+    const { id } = await this.eventService.createEvent({ description, totalTicketSlot, eventName, eventDate });
 
     sendSuccessResponse(res, HttpStatusCodes.CREATED, 'Event created successfully.', { id });
   });

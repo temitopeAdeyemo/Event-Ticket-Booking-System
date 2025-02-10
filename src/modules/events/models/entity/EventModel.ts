@@ -15,6 +15,9 @@ export class EventModel implements IEventDTO {
   @Column({ nullable: true, length: 250 })
   description: string;
 
+  @Column({ type: 'date', name: "event_date", nullable: true })
+  eventDate: string;
+
   @Column({ nullable: true, name: 'total_ticket_slots' })
   totalTicketSlot: number;
 
