@@ -11,3 +11,4 @@ package-lock.json
 yarn-lock.json
 a.js
 coverage
+.env_

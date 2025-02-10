@@ -8,7 +8,7 @@ services:
     image: event-ticket-api
     container_name: event-ticket-api
     ports:
-      - "50051:50051"
+      - "3002:3002"
     volumes:
       - ../:/app
       - /app/node_modules

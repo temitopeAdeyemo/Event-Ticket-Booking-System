@@ -12,7 +12,7 @@ class Database {
       synchronize: DB_SYNC,
       logging: DB_LOGGING,
       // migrationsRun: !DB_SYNC,
-      entities: ['./src/modules/**/models/entity/*.ts'],
+      entities: ['./dist/modules/**/models/entity/*.js'],
       migrations: ['./src/shared/migrations/*.ts'],
       // dropSchema: DB_SYNC,
       applicationName: DB_APPLICATION_NAME,
