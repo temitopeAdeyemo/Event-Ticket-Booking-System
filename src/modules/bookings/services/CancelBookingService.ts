@@ -32,7 +32,6 @@ export class CancelBookingService {
       if (!event) throw new AppError('Event not found.', HttpStatusCodes.NOT_FOUND);
 
       await this.bookingRepository.delete(booking!.id, queryRunner);
-      console.log("****************************************************************:::",);
       const nextWaitlistedUser = await this.waitListRepository.findOneByDataAndLock(
         queryRunner,
         { event: { id: eventId } },
@@ -40,7 +39,7 @@ export class CancelBookingService {
         { user: true },
         ['WaitLists']
       );
-      console.log("****************************************************************", nextWaitlistedUser);
+      
       if (!nextWaitlistedUser) return;
 
       const newBooking = await this.bookingRepository.create({ event, user: nextWaitlistedUser.user }, false);

@@ -11,10 +11,10 @@ class Database {
       url: DB_URL,
       synchronize: DB_SYNC,
       logging: DB_LOGGING,
-      // migrationsRun: DB_SYNC,
+      // migrationsRun: !DB_SYNC,
       entities: ['./src/modules/**/models/entity/*.ts'],
       migrations: ['./src/shared/migrations/*.ts'],
-      dropSchema: DB_SYNC,
+      // dropSchema: DB_SYNC,
       applicationName: DB_APPLICATION_NAME,
     });
     Log.info('Db config: ', JSON.stringify({ type: 'postgres', url: DB_URL, synchronize: DB_SYNC, dropSchema: DB_SYNC }));

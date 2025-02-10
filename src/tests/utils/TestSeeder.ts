@@ -42,8 +42,8 @@ class TestSeeder {
     const users = await this.userRepository.save([this.userRepository.create(user1), this.userRepository.create(user2)]);
 
     const event1 = {
-      eventName: 'Tech Conference 2025',
-      description: 'A conference for tech enthusiasts',
+      eventName: 'Event ticket 2025',
+      description: 'Event ticket launch 2025',
       totalTicketSlot: 1,
       eventDate: '2025-09-09',
     };

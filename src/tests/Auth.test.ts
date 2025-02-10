@@ -2,6 +2,10 @@ import request from 'supertest';
 import { global } from './config/jest.setup';
 
 class AuthTest {
+  constructor() {
+    this.testUserRegistration();
+    this.testUserLogin();
+  }
   async testUserRegistration() {
     describe('User Registration', () => {
       it('should register a new user successfully', async () => {
@@ -81,7 +85,4 @@ class AuthTest {
   }
 }
 
-const authTest = new AuthTest();
-
-authTest.testUserRegistration();
-authTest.testUserLogin();
+new AuthTest();

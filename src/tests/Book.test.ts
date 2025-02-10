@@ -14,7 +14,7 @@ class BookingTest {
 
   async testBookTicket() {
     describe('Book Ticket', () => {
-      it('should successfully book a ticket when available', async () => {
+      it('should successfully book a ticket', async () => {
         const res = await request(global.app)
           .post('/api/v1/booking/book')
           .set('Authorization', `Bearer ${this.accessToken}`)
@@ -43,7 +43,7 @@ class BookingTest {
         expect(res.body.data).toHaveProperty('waitListId');
       });
 
-      it('should return 404 for non-existing event', async () => {
+      it('should return 400 when an event does not exists', async () => {
         const res = await request(global.app)
           .post('/api/v1/booking/book')
           .set('Authorization', `Bearer ${this.accessToken}`)
@@ -81,7 +81,7 @@ class BookingTest {
         expect(res.body.data).toBeInstanceOf(Array);
       });
 
-      it('should return 400 for non-existing booking', async () => {
+      it('should return 400 for non existing booking', async () => {
         const res = await request(global.app)
           .get('/api/v1/booking/fetch/invalid-booking')
           .set('Authorization', `Bearer ${this.accessToken}`);
@@ -113,17 +113,17 @@ class BookingTest {
         expect(cancelRes.body.success).toBe(true);
       });
 
-      it('should return 400 for non-existing booking', async () => {
+      it('should return 400 for when a booking id does not exists', async () => {
         const res = await request(global.app)
           .post('/api/v1/booking/cancel')
           .set('Authorization', `Bearer ${this.accessToken}`)
-          .send({ bookingId: 'non-existing-id' });
+          .send({ bookingId: 'bad-id' });
 
         expect(res.status).toBe(400);
         expect(res.body.success).toBe(false);
       });
 
-      it('should return 400 when bookingId is missing', async () => {
+      it('should return 400 when bookingId is missing in the payload', async () => {
         const res = await request(global.app).post('/api/v1/booking/cancel').set('Authorization', `Bearer ${this.accessToken}`).send({});
 
         expect(res.status).toBe(400);

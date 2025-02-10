@@ -13,15 +13,14 @@ class Global {
   public testData: {
     users: Partial<User>[];
     events: Partial<EventModel>[];
-    bookings: Partial<Booking>[]
+    bookings: Partial<Booking>[];
   } = { users: [], events: [], bookings: [] };
   constructor() {
+    const appInstance = new App();
+    this.appInstance = appInstance;
+    this.app = appInstance.getApp();
     beforeAll(async () => {
-      const appInstance = new App();
       await appInstance.connectDatabase();
-      this.appInstance = appInstance;
-      this.app = appInstance.getApp();
-
       await testSeeder.cleanDatabase();
       this.testData = await testSeeder.seedTestData();
     });

@@ -85,7 +85,7 @@ class EventTest {
         expect(res.body.data).toBeInstanceOf(Array);
       });
 
-      it('should return 400 for non-existing event', async () => {
+      it('should return 400 when event an event id is invalid', async () => {
         const res = await request(global.app).get('/api/v1/event/fetch/invalid-event').set('Authorization', `Bearer ${this.accessToken}`);
 
         expect(res.status).toBe(400);
@@ -108,7 +108,7 @@ class EventTest {
         expect(res.body.success).toBe(true);
       });
 
-      it('should return 404 for a non-existing event', async () => {
+      it('should return 400 for a non existing event', async () => {
         const res = await request(global.app)
           .get('/api/v1/event/status/invalid-event-id')
           .set('Authorization', `Bearer ${this.accessToken}`);

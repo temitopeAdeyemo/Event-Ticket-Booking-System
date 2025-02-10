@@ -5,7 +5,6 @@ import { Log } from '../utils/Log';
 
 export class Health {
   public static async check() {
-    console.log('************************************');
     cron.schedule(HEALTH_CRON, async () => {
       try {
         await axios.get(BASE_URL + '/api/v1/health-check');
