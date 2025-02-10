@@ -30,6 +30,8 @@ export class Seedings {
         message: `A default user and access token has been generated for testing purposes.\nEmail: ${DEFAULT_USER_EMAIL}\nPassword: ${DEFAULT_USER_PASSWORD}\naccess_token: ${accessToken}`,
       };
     } catch (error) {
+      console.log("********************************");
+      console.log(error);
       Log.error(error);
       process.exit(1);
     }
