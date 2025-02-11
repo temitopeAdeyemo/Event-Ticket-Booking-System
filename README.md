@@ -73,7 +73,7 @@ NOTE: You can run the test using `docker compose up`. Except that after the test
 
 ## Rate Limiting
 
-The application includes a **rate limiter** to control traffic and protect against denial-of-service (DoS) attacks. It also restricts access to critical endpoints (`/book`, `/cancel`) to prevent race conditions. The rate limiter ensures fair usage by controlling traffic based on endpoint sensitivity.
+The application includes a **rate limiter** to control traffic and protect against denial-of-service (DoS) attacks. It also controls access to critical endpoints (`/book`, `/cancel`) to prevent race conditions. The rate limiter ensures fair usage by controlling traffic based on endpoint sensitivity.
 
 ## Concurrency Handling
 
