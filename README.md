@@ -24,7 +24,7 @@ Make sure you have the following installed on your machine:
 * Docker
 * Docker Compose
 * Redis
-* relics for log (Not mandatory, Remove import from app.ts/js and remove newrelic.js if you do not have relic cred. on db)
+* relics for log (Not mandatory, Remove import from app.ts/js and remove newrelic.js if you do not have relic cred.)
 
 ### Installation
 
