@@ -40,10 +40,11 @@ Make sure you have the following installed on your machine:
 
 ## Usage
 
-To start the application in development mode: (Configure the `.env` variables from the `.env-xample`)
+To start the application in development mode, Run: (Configure the `.env` variables from the `.env-xample`)
 
 ```bash
-  yarn start:dev
+tsc  
+yarn start:dev
 ```
 
 ## Docker
@@ -52,6 +53,7 @@ The application is containerized using Docker. To run the application in a Docke
 
 1. Ensure Docker is running on your machine.
 2. Rename the .env-xample file to .env without editing the file content.
+   - Run `tsc`
 3. Navigate to the Docker directory:
    ```bash
    cd docker
