@@ -40,7 +40,7 @@ Make sure you have the following installed on your machine:
 
 ## Usage
 
-To start the application in development mode: (Configure the `.env` variables from the `.env-example`)
+To start the application in development mode: (Configure the `.env` variables from the `.env-xample`)
 
 ```bash
   yarn start:dev
@@ -51,22 +51,25 @@ To start the application in development mode: (Configure the `.env` variables fr
 The application is containerized using Docker. To run the application in a Docker container:
 
 1. Ensure Docker is running on your machine.
-2. Navigate to the Docker directory:
+2. Rename the .env-xample file to .env without editing the file content.
+3. Navigate to the Docker directory:
    ```bash
    cd docker
    ```
-3. Run the following command to build and start the containers:
+4. Run the following command to build and start the containers:
    ```bash
-   docker-compose up
+   docker compose up
    ```
 
 ## Unit Test
 
-The application is unit tested with Jest. Tests can be run using the following command. Ensure Redis is running locally if needed.
+The application is unit tested with Jest. Tests can be run using the following command. Ensure Redis is running locally if needed. (This requires that all .env variables are set.)
 
 ```bash
 npm run test 
 ```
+
+NOTE: You can run the test using `docker compose up`. Except that after the test runs successfuly, the server starts which is fine.
 
 ## Rate Limiting
 

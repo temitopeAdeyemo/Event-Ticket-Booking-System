@@ -12,8 +12,47 @@ services:
     volumes:
       - ../:/app
       - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - event-ticket-network
+
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: event-ticket-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - event-ticket-dev-db:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - event-ticket-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:alpine
+    container_name: event-ticket-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - event-ticket-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 3
 volumes:
   event-ticket-dev-db:
 
